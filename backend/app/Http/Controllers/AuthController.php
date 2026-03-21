@@ -13,6 +13,7 @@ class AuthController extends Controller
 
     public function index(Request $request, Response $response){
         $address = $request->ip();
+        var_dump($this->route('id')); exit;
         return response(['address'=>$address])
                 ->header('Content-Type', 'application/json');
     }
@@ -34,11 +35,6 @@ class AuthController extends Controller
         $data = ['user'=>$user , 'token'=>$token];
          return response($data, 200)
                 ->header('Content-Type', 'application/json');
-
-        // return response()->json([
-        //         'user' => $user,
-        //         'token' => $token
-        //     ], 201);
     }
 
     // login action
@@ -62,10 +58,6 @@ class AuthController extends Controller
             'token' => $token
         ];
 
-        // return response()->json([
-        //     'user' => $user,
-        //     'token' => $token
-        // ]);
         return response($data, 200)
                 ->header('Content-Type', 'application/json');
     }
