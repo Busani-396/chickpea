@@ -16,13 +16,14 @@ Route::get('/ping/{id}/data', [AuthController::class, 'index']);
 Route::controller(AuthController::class)->group(function(){
     Route::Post('/register', 'register');
     Route::Post('/login', 'login');
+    Route::post('/logout', 'logout')->middleware('auth:sanctum');
 });
 
 Route::apiResource('/client', ClientController::class)->middleware('auth:sanctum'); 
 
 Route::controller(CampaignController::class)->group(function(){
     Route::Post('/campaigns','store');
-});
+})->middleware('auth:sanctum');
 
 Route::controller(CampaignDataController::class)->group(function(){
     Route::Post('/campaigns/{campaign_id}/data','store');
