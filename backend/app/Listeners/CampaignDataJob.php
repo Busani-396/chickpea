@@ -46,6 +46,5 @@ class CampaignDataJob implements ShouldQueue
                 'custom_fields'=> $userData['custom_fields'] ?? null,
             ]);
         }
-       // \Log::warning('Just testing if this is working asemblif!!!');
     }
 }
