@@ -1,7 +1,6 @@
 version: '3.8'
 services:
 
-  # PHP Application
   app:
     build:
       context: .
@@ -18,8 +17,6 @@ services:
       - ./:/var/www
     networks:
       - chickpea-network
-
-  # MySQL Database
   db:
     image: mysql:8.0
     container_name: chickpea-db
@@ -29,9 +26,9 @@ services:
       - "3306:3306"
     environment:
       MYSQL_DATABASE: chickpea_db
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_PASSWORD: user_password
-      MYSQL_USER: busani
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      MYSQL_USER: root
     volumes:
       - ./docker-data/mysql:/var/lib/mysql
     networks:
