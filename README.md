@@ -71,20 +71,20 @@ POST /api/campaigns/{campaign_id}/data
 
 This project uses Laravel Queues to ensure the API remains responsive
 
-# Event: When data hits the controller, a CampaignDataReceived event is dispatch
-# Queue: The event is stored in the jobs table.
-# Worker: The chickpea-worker container continuously monitors this table and executes the CampaignDataJob listener to perform database inserts and duplicate checks.
+ Event: When data hits the controller, a CampaignDataReceived event is dispatch
+ Queue: The event is stored in the jobs table.
+ Worker: The chickpea-worker container continuously monitors this table and executes the CampaignDataJob listener to perform database inserts and duplicate checks.
 
-# To monitor the worker logs in real-time: 
+ To monitor the worker logs in real-time: 
 docker-compose logs -f worker
 
 ## command line functionality 
-# Analytics & Reporting
+ Analytics & Reporting
 
 docker-compose exec app php artisan campaign:report {campaign_id}
 
 ## Testing
-# A Postman collection is included in the root directory:
+## A Postman collection is included in the root directory:
 Chickpea CMS.postman_collection.json
 
 1 Import the JSON into Postman.
