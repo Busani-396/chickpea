@@ -21,12 +21,22 @@ Route::controller(AuthController::class)->group(function(){
 
 Route::apiResource('/client', ClientController::class)->middleware('auth:sanctum'); 
 
-Route::controller(CampaignController::class)->group(function(){
-    Route::Post('/campaigns','store');
-})->middleware('auth:sanctum');
+// Route::controller(CampaignController::class)->group(function(){
+//     Route::Post('/campaigns','store');
+// })->middleware('auth:sanctum');
 
-Route::controller(CampaignDataController::class)->group(function(){
-    Route::Post('/campaigns/{campaign_id}/data','store');
+// Route::controller(CampaignDataController::class)->group(function(){
+//     Route::Post('/campaigns/{campaign_id}/data','store');
+// })->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::controller(CampaignController::class)->group(function () {
+        Route::post('/campaigns', 'store');
+    });
+
+    Route::controller(CampaignDataController::class)->group(function () {
+        Route::post('/campaigns/{campaign_id}/data', 'store');
+    });
 });
 
 

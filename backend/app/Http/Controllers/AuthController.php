@@ -2,39 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    use ApiResponse;
 
     public function index(Request $request, Response $response){
         $address = $request->ip();
-        var_dump($this->route('id')); exit;
         return response(['address'=>$address])
                 ->header('Content-Type', 'application/json');
     }
 
     // registration action
-    public function register(Request $request){
-        $request->validate([
-                'email' => 'required|email|unique:users',
-                'password' => 'required|min:8'
-            ]);
+    public function register(RegisterRequest $request){
+        try{
+            $user = User::create([
+                        'name'=>$request->name,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                    ]);
 
-        $user = User::create([
-                    'name'=>$request->name,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                ]);
-
-        $token = $user->createToken('email')->plainTextToken;
-        $data = ['user'=>$user , 'token'=>$token];
-         return response($data, 200)
-                ->header('Content-Type', 'application/json');
+            $token = $user->createToken('email')->plainTextToken;
+            $data = ['user'=>$user , 'token'=>$token];
+            
+            return $this->success($data,'Successfully registered');
+        }catch(\Illuminate\Validation\ValidationException $e){
+            throw $e;
+        }catch (\Exception $e){
+            \Log::error($e->getMessage());
+            return $this->error('Server error occurred', 500);
+        }
     }
 
     // login action
@@ -47,9 +51,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json([
-                'message' => 'Invalid credentials'
-            ], 401);
+            return $this->error('Invalid credentials', 401);
         }
 
         $token = $user->createToken('email')->plainTextToken;
@@ -58,14 +60,12 @@ class AuthController extends Controller
             'token' => $token
         ];
 
-        return response($data, 200)
-                ->header('Content-Type', 'application/json');
+        return $this->success($data,'Successfully logged in', 200);
     }
 
     public function logout(Request $request){
         $request->user()->currentAccessToken()->delete();
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ], 200);
+         return $this->success([], 'Successfully logged out', 200);
     }
+    
 }

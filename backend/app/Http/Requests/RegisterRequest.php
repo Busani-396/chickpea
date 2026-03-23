@@ -5,14 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCampaignRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return auth()->check();
+        return true;
     }
 
     /**
@@ -23,18 +23,16 @@ class StoreCampaignRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_id' => 'required | exists:clients,id',
-            'name' => 'required|unique:campaigns|min:1',
-            'start_date' => 'required|date',
-            'end_date'   => 'nullable|date|after:start_date'
+            'name'=>'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8'
         ];
     }
 
-     public function messages(): array
+    public function messages(): array
     {
         return [
-            'name.required' => 'campaign name is required',
-            'start_date.required' => 'The start date is required (YYYY-MM-DD)'
+            'name.required' => 'name is required',
         ];
     }
 }

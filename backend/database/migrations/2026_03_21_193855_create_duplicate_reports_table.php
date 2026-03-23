@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('duplicate_reports', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('attempted_user_id')->nullable();
+            //$table->unsignedBigInteger('attempted_user_id')->nullable();
+            $table->string('attempted_user_id')->nullable();
             $table->unsignedBigInteger('campaign_id')->nullable();
             $table->string('ip_address', 45)->nullable();
             $table->json('payload')->nullable(); 

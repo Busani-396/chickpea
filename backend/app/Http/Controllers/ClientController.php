@@ -4,25 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Http\Resources\ClientResource;
 use App\Http\Resources\UserResource;
 use App\Models\Client;
 use App\Models\ClientUser;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
+    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         //return response(['name'=>'client'], 200, ['accept'=>'application/json']);
-        //return Auth::user()->id;
-$d = new UserResource(User::find(1)); 
-        return  $d->additional(['g'=>'hello']);
-        //return User::find(1);
     }
 
     /**
@@ -34,21 +33,16 @@ $d = new UserResource(User::find(1));
             'name' => $request->name,
         ]);
 
-        //Auth::user()->clients()->attach($client->id);
-
         if(!Auth::user()){
             throw new Exception('Login first');
         }
 
-        $client_user =  ClientUser::create([
+        ClientUser::create([
             'client_id' => $client->id,
             'user_id' => Auth::user()->id
         ]);
 
-        return response()->json([
-            'message' => 'Client created successfully',
-            'client' => $client
-        ], 201);
+        return $this->success(new ClientResource($client), 'Client details');
     }
 
     /**
