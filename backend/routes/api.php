@@ -20,7 +20,7 @@ Route::middleware('throttle:api')->group(function () {
     Route::apiResource('/client', ClientController::class)->middleware('auth:sanctum'); 
 });
 
-Route::middleware(['auth:sanctum', 'throttle:uploads'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:uploads'])->group(function (){
     Route::controller(CampaignController::class)->group(function (){
         Route::post('/campaigns', 'store');
     });
