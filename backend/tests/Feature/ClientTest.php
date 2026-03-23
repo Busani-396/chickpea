@@ -40,9 +40,14 @@ class ClientTest extends TestCase
 
         $this->assertDatabaseHas('clients', ['name' => 'Cocacola']);
 
+        // $this->assertDatabaseHas('client_users', [
+        //     'user_id' => $user->id,
+        //     'client_id' => $response->json('client.id')
+        // ]);
+
         $this->assertDatabaseHas('client_users', [
             'user_id' => $user->id,
-            'client_id' => $response->json('client.id')
+            'client_id' => $response->json('data.id') 
         ]);
     }
 

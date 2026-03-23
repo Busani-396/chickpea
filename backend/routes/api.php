@@ -10,15 +10,17 @@ use Illuminate\Support\Facades\Route;
 
 # Route::get('/ping/{id}/data', [AuthController::class, 'index']);
 
-Route::controller(AuthController::class)->group(function(){
-    Route::Post('/register', 'register');
-    Route::Post('/login', 'login');
-    Route::post('/logout', 'logout')->middleware('auth:sanctum');
+Route::middleware('throttle:api')->group(function () {
+    Route::controller(AuthController::class)->group(function(){
+        Route::Post('/register', 'register');
+        Route::Post('/login', 'login');
+        Route::post('/logout', 'logout')->middleware('auth:sanctum');
+    });
+
+    Route::apiResource('/client', ClientController::class)->middleware('auth:sanctum'); 
 });
 
-Route::apiResource('/client', ClientController::class)->middleware('auth:sanctum'); 
-
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:uploads'])->group(function () {
     Route::controller(CampaignController::class)->group(function () {
         Route::post('/campaigns', 'store');
     });

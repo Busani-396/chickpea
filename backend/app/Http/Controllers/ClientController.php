@@ -42,7 +42,7 @@ class ClientController extends Controller
             'user_id' => Auth::user()->id
         ]);
 
-        return $this->success(new ClientResource($client), 'Client details');
+        return $this->success(new ClientResource($client), 'Client created successfully',201);
     }
 
     /**

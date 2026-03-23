@@ -21,15 +21,3 @@ class ClientResource extends JsonResource
         ];
     }
 }
-
-
-
-// {
-//     "message": "Client created successfully",
-//     "client": {
-//         "name": "MTN Yello",
-//         "updated_at": "2026-03-22T21:42:45.000000Z",
-//         "created_at": "2026-03-22T21:42:45.000000Z",
-//         "id": 2
-//     }
-// }

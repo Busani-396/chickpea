@@ -8,8 +8,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Models\CampaignData;
 use App\Models\duplicateReport;
 
-class CampaignDataJob
+class CampaignDataJob implements ShouldQueue
 {
+    use InteractsWithQueue;
     /**
      * Create the event listener.
      */
