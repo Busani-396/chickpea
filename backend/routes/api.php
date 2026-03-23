@@ -7,11 +7,8 @@ use App\Http\Controllers\ClientController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
-Route::get('/ping/{id}/data', [AuthController::class, 'index']);
+# Route::get('/ping/{id}/data', [AuthController::class, 'index']);
 
 Route::controller(AuthController::class)->group(function(){
     Route::Post('/register', 'register');
@@ -20,14 +17,6 @@ Route::controller(AuthController::class)->group(function(){
 });
 
 Route::apiResource('/client', ClientController::class)->middleware('auth:sanctum'); 
-
-// Route::controller(CampaignController::class)->group(function(){
-//     Route::Post('/campaigns','store');
-// })->middleware('auth:sanctum');
-
-// Route::controller(CampaignDataController::class)->group(function(){
-//     Route::Post('/campaigns/{campaign_id}/data','store');
-// })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(CampaignController::class)->group(function () {

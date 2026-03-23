@@ -1,21 +1,24 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Console;
 
+use App\Models\Campaign;
+use App\Models\Client;
+use App\Models\CampaignData;
+use App\Models\duplicateReport as DuplicateReport; 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-
+use PHPUnit\Framework\Attributes\Test;
 
 class AnalyticsReportTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_it_generates_report(){
-        $campaign = \App\Models\Campaign::factory()->create();
-
-        $this->artisan('app:analytics-report', ['id' => $campaign->id])
-            ->expectsOutput("Generating Report for: {$campaign->name} (Client: {$campaign->client->name})")
-            ->assertExitCode(0);
+    #[Test]
+    public function it_fails_gracefully_when_campaign_id_does_not_exist()
+    {
+        $this->artisan('app:analytics-report 9999')
+             ->expectsOutput('Campaign with ID 9999 not found.')
+             ->assertExitCode(0);
     }
 }

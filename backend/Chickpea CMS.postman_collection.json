@@ -1,0 +1,235 @@
+{
+	"info": {
+		"_postman_id": "63eaa7cf-fb1b-4231-be9f-ecb104a07b1e",
+		"name": "Chickpea CMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "25685992",
+		"_collection_link": "https://team-testing-5871.postman.co/workspace/pricing_ms~e9c4425b-adaa-4439-955d-2d2d8eafb062/collection/25685992-63eaa7cf-fb1b-4231-be9f-ecb104a07b1e?action=share&creator=25685992&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "authentication",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "2|FfDlSRcrnWiwZIRkqdyXPYMF4ulA6OLEkX2A2S3d6c9f147e"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "21",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345678",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "john1@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{baseUrl}}/api/register"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "john@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "John",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345678",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{baseUrl}}/api/login"
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "1|ICfkyWDPs0AZ3IzfhFJX3XvXY5owhyLtYtzs8mbRb9690452yy"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}/api/logout"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "client",
+			"item": [
+				{
+					"name": "client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "2|FfDlSRcrnWiwZIRkqdyXPYMF4ulA6OLEkX2A2S3d6c9f147e"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Nice Ent",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{baseUrl}}/api/client"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "campaigns",
+			"item": [
+				{
+					"name": "campaigns",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "3|ps0n5m6v8JG9XXkRbK7kXRH4wOEfpUDJHIceZ4xQ527e5a1f"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "client_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Woza",
+									"type": "text"
+								},
+								{
+									"key": "start_date",
+									"value": "2026-05-30",
+									"type": "text"
+								},
+								{
+									"key": "end_date",
+									"value": "2026-07-07",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{baseUrl}}/api/campaigns"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "campaigns_data",
+			"item": [
+				{
+					"name": "campaigns",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"user_id\": \"user_12345\",\n        \"video_url\": \"https://amazons3-user_12345/video1.mp4\",\n        \"custom_fields\": {\n            \"source\": \"mobile_app\",\n            \"device\": \"iPhone 15\",\n            \"notes\": \"Testing the background dispatch\"\n        }\n    },\n    {\n        \"user_id\": \"user_67890\",\n        \"video_url\": \"https://amazons3-user_67890/video1.mp4\",\n        \"custom_fields\": {\n            \"favourite_color\": \"Black\",\n            \"priority\": \"high\"\n        }\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/api/campaigns/1/data"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1:8000"
+		}
+	]
+}

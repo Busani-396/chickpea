@@ -25,52 +25,71 @@ class AnalyticsReport extends Command
     /**
      * Execute the console command.
      */
+
     public function handle()
     {
         $id = $this->argument('id');
-        //$this->info("Testing :> Generating report for ID $id");
+        
         $campaign = Campaign::with(['client'])->find($id);
-        if (!$campaign){
+
+        if (!$campaign) {
             $this->error("Campaign with ID {$id} not found.");
             return;
         }
 
-        $this->info("Generating Report for: {$campaign->name} (Client: {$campaign->client->name})");
-        $this->newLine();
+        $stats = DB::table('campaign_data')
+            ->selectRaw('count(*) as success_count')
+            ->where('campaign_id', $id)
+            ->first();
 
-        $successCount = DB::table('campaign_data')->where('campaign_id', $id)->count();
-        $duplicateCount = DB::table('duplicate_reports')->where('campaign_id', $id)->count();
+        $dupStats = DB::table('duplicate_reports')
+            ->selectRaw('count(*) as duplicate_count, MAX(created_at) as last_collision')
+            ->where('campaign_id', $id)
+            ->first();
+
+        $successCount = $stats->success_count;
+        $duplicateCount = $dupStats->duplicate_count;
         $totalHits = $successCount + $duplicateCount;
         $successRate = $totalHits > 0 ? round(($successCount / $totalHits) * 100, 2) : 0;
 
-        // Flexible Custom Fields: The custom_fields object may contain arbitrary fields. The system must:
-        // • Store them without requiring schema changes.
-        // • Ensure they can be surfaced in analytics reports.
+        $this->info("=== Campaign Analytics Report ===");
+        $this->line("Campaign: <comment>{$campaign->name}</comment> | Client: <comment>{$campaign->client->name}</comment>");
+        $this->line("Started On: <comment>{$campaign->start_date}</comment> to <comment>" . ($campaign->end_date ?? 'Ongoing') . "</comment>");
+        $this->newLine();
 
-        $optionalFields = DB::table('campaign_data')
+        $sampleData = DB::table('campaign_data')
             ->where('campaign_id', $id)
             ->whereNotNull('custom_fields')
             ->limit(10)
-            ->get();
+            ->pluck('custom_fields');
 
-           $discoveredKeys = $optionalFields->flatMap(function($item){
-                return array_keys(json_decode($item->custom_fields, true) ?? []);
-            })->unique()->implode(', ');
+        // $discoveredKeys = $sampleData->flatMap(function($json){
+        //     return array_keys(json_decode($json, true) ?? []);
+        // })->unique()->values()->all();
+        $discoveredKeys = $sampleData->flatMap(function($json) {
+            $decoded = is_array($json) ? $json : json_decode($json, true);
+            return array_keys((array) $decoded); 
+        })->unique()->values()->all();
 
         $this->table(
-            ['Indicator', 'Result'],
+            ['Metric', 'Result', 'Status'],
             [
-                ['Total API Hits (Processed)', $totalHits],
-                ['Successful Records', $successCount],
-                ['Duplicate Attempts Logged', $duplicateCount],
-                ['Ingestion Success Rate', $successRate . '%'],
-                ['Custom Fields Detected', $discoveredKeys ?: 'None'],
+                ['Total API Traffic', $totalHits, 'Total hits received'],
+                ['Valid Records', $successCount, '<info>Saved to DB</info>'],
+                ['Duplicates Blocked', $duplicateCount, $duplicateCount > 0 ? '<warn>Logged</warn>' : 'Clean'],
+                ['Ingestion Health', $successRate . '%', $successRate > 90 ? 'Excellent' : 'Review Required'],
             ]
         );
 
+        if (!empty($discoveredKeys)) {
+            $this->info("Optional Fields:");
+            $this->bulletList($discoveredKeys);
+        }
+
         if ($duplicateCount > 0) {
             $this->newLine();
-            $this->warn("Recent Duplicate Conflicts:");
+            $this->error("Duplicates (Last 5):");
+            
             $duplicates = DB::table('duplicate_reports')
                 ->where('campaign_id', $id)
                 ->latest()
@@ -78,9 +97,16 @@ class AnalyticsReport extends Command
                 ->get(['attempted_user_id', 'ip_address', 'created_at']);
 
             $this->table(
-                ['User ID Attempted', 'Source IP', 'Timestamp'],
+                ['User ID Attempted', 'Origin IP', 'Conflict Time'],
                 $duplicates->map(fn($d) => (array)$d)->toArray()
             );
         }
     }
+
+    private function bulletList(array $items){
+        foreach ($items as $item) {
+            $this->line(">{$item}");
+        }
+    }
+
 }
