@@ -21,11 +21,11 @@ Route::middleware('throttle:api')->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'throttle:uploads'])->group(function () {
-    Route::controller(CampaignController::class)->group(function () {
+    Route::controller(CampaignController::class)->group(function (){
         Route::post('/campaigns', 'store');
     });
 
-    Route::controller(CampaignDataController::class)->group(function () {
+    Route::controller(CampaignDataController::class)->group(function (){
         Route::post('/campaigns/{campaign_id}/data', 'store');
     });
 });
